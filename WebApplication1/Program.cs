@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ApplicationDbContext>();
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
@@ -51,6 +53,14 @@ public static class ProductRepository
 
 public class Product
 {
+    public int Id { get; set; }
     public string Code { get; set; }
     public string Name { get; set; }
+}
+//classe de configuração da conexão com o banco sqlserver
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<Product> Products { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("Server=localhost;Database=Products;User Id=sa;Password=@Sql2019;MultipleActiveResultsSets=true;Encrypt=YES;Trusted_Connection=True");
 }

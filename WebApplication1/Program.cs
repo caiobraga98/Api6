@@ -51,16 +51,28 @@ public static class ProductRepository
 
 }
 
+public class Category
+{
+    public int Id { get; set; }
+    public string Description { get; set; }
+}
+
 public class Product
 {
     public int Id { get; set; }
     public string Code { get; set; }
     public string Name { get; set; }
+    public List<Category> Category { get; set; }
 }
 //classe de configuração da conexão com o banco sqlserver
 public class ApplicationDbContext : DbContext
 {
     public DbSet<Product> Products { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<Product>().Property(p => p.Name).HasMaxLength(120).IsRequired();
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("Server=localhost;Database=Products;User Id=sa;Password=@Sql2019;Encrypt=NO;Trusted_Connection=NO");
 }
